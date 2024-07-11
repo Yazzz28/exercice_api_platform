@@ -5,14 +5,18 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use App\State\DependencyDataProvider;
 use ApiPlatform\Metadata\GetCollection;
 
-#[ApiResource(
-    paginationEnabled: false
-)]
-#[Get]
-#[GetCollection]
 
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection(),
+    ],
+    paginationEnabled: false,
+    provider: DependencyDataProvider::class
+    )]
 class Dependency
 {
 #[ApiProperty(

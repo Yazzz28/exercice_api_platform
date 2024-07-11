@@ -2,34 +2,47 @@
 
 namespace App\State;
 
-use App\Entity\Dependency;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use App\Entity\Dependency;
+use Ramsey\Uuid\Uuid;
 
-class DependencyDataProvider implements ProviderInterface
+final class DependencyDataProvider implements ProviderInterface
 {
-
-    public function __construct(private string $rootPath)
+    public function __construct(private readonly string $rootPath)
     {
 
+}
+
+public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+{
+    $dependencies = $this->_readDependencies();
+    if ($operation instanceof GetCollection) {
+        $items = [];
+        foreach ($dependencies as $name => $version) {
+            $items[] = new Dependency(Uuid::uuid5(Uuid::NAMESPACE_URL, $name)->toString(), $name, $version);
+        }
+        return $items;
     }
-    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
-    {
-        // Retrieve the state from somewhere
-    
-        // Return a default value
+
+
+    if ($operation instanceof Get) {
+        foreach ($dependencies as $name => $version) {
+            if (($uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, $name)->toString()) === $uriVariables['uuid']) {
+                return new Dependency($uuid, $name, $version);
+            }
+        }
         return null;
     }
 
-    public function getCollection(string $ressourceClass, string $operationName, array $context = [])
-    {
-        $path = $this->rootPath . 'composer.json';
-        $json = json_decode(file_get_contents($path), true);
-        dd($json);
-    }
+}
 
-    public function supports(string $ressourceClass, string $operationName, array $context = []): bool
-    {
-        return $ressourceClass === Dependency::class;
-    }
+private function _readDependencies(): array
+{
+    $json = json_decode(file_get_contents($this->rootPath . '/composer.json'), true);
+    return $json['require'];
+
+}
 }
