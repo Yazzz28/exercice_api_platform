@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: PublishPostAction::class,
         ),
         new Get(
-            normalizationContext: ['groups' => ['read:Posts']],
+            normalizationContext: ['groups' => ['count:Post']],
             name: 'count_posts',
             uriTemplate: '/posts/count',
             controller: CountPostController::class,
@@ -39,7 +39,6 @@ use Symfony\Component\Validator\Constraints as Assert;
                         'name' => 'online',
                         'schema' => [
                             'type' => 'integer',
-                            'default' => 1,
                             'minimum' => 0,
                             'maximum' => 1,
                         ],
@@ -53,6 +52,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                             'application/json' => [
                                 'schema' => [
                                     'type' => 'integer',
+                                    'example' => '10',
                                 ],
                             ],
                         ],
@@ -82,34 +82,34 @@ class Post
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:Posts', 'read:Post', 'write:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read:Posts', 'read:Post', 'write:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     #[Assert\NotBlank]
     private ?string $slug = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['read:Post', 'write:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     #[Assert\Length(min: 5)]
     private ?string $content = null;
 
     #[ORM\Column]
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['read:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts', cascade: ['persist'])]
-    #[Groups(['read:Posts', 'read:Post', 'write:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     #[Valid]
     private ?Category $category = null;
 
     #[ORM\Column]
-    #[Groups(['read:Posts', 'read:Post', 'write:Post'])]
+    #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     private ?bool $online = false;
 
     public function __construct()
