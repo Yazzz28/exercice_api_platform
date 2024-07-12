@@ -8,41 +8,25 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\Dependency;
 use Ramsey\Uuid\Uuid;
+use App\Repository\DependencyRepository;
 
 final class DependencyDataProvider implements ProviderInterface
 {
-    public function __construct(private readonly string $rootPath)
+    public function __construct(private DependencyRepository $repository)
     {
-
-}
-
-public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
-{
-    $dependencies = $this->_readDependencies();
-    if ($operation instanceof GetCollection) {
-        $items = [];
-        foreach ($dependencies as $name => $version) {
-            $items[] = new Dependency(Uuid::uuid5(Uuid::NAMESPACE_URL, $name)->toString(), $name, $version);
-        }
-        return $items;
     }
 
-
-    if ($operation instanceof Get) {
-        foreach ($dependencies as $name => $version) {
-            if (($uuid = Uuid::uuid5(Uuid::NAMESPACE_URL, $name)->toString()) === $uriVariables['uuid']) {
-                return new Dependency($uuid, $name, $version);
-            }
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
+    {
+        if ($operation instanceof GetCollection) {
+            return $this->repository->findAll();
         }
+    
+        if ($operation instanceof Get) {
+            return $this->repository->findOneBy($uriVariables['uuid']);
+        }
+    
+        // Add a default return statement
         return null;
     }
-
-}
-
-private function _readDependencies(): array
-{
-    $json = json_decode(file_get_contents($this->rootPath . '/composer.json'), true);
-    return $json['require'];
-
-}
 }

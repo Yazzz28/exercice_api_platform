@@ -28,6 +28,6 @@ services:
         arguments: ['@App\OpenApi\OpenApiFactory.inner']
         autoconfigure: false
 
-    App\State\DependencyDataProvider:
+    App\Repository\DependencyRepository:
         arguments:
             $rootPath: '%kernel.project_dir%' 
