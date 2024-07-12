@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\Delete;
 use Ramsey\Uuid\Uuid;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\State\DependencyDataProvider;
@@ -20,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(),
         new GetCollection(),
         new PostMethod(),
-        new Put(
+        new Patch(
             denormalizationContext: [
                 'groups' => ['put:Dependency']
             ]
