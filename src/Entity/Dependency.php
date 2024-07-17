@@ -18,20 +18,26 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(
+            provider: DependencyDataProvider::class
+        ),
+        new GetCollection(
+            provider: DependencyDataProvider::class
+        ),
         new PostMethod(
             processor: DependencyDataPersister::class
         ),
         new Patch(
+            processor: DependencyDataPersister::class,
             denormalizationContext: [
                 'groups' => ['put:Dependency']
             ]
         ),
-        new Delete()
+        new Delete(
+            processor: DependencyDataPersister::class
+        )
     ],
     paginationEnabled: false,
-    provider: DependencyDataProvider::class,
 )]
 class Dependency
 {

@@ -12,29 +12,26 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class DependencyDataPersister implements ProcessorInterface
 {
     public function __construct(
-        private DependencyRepository $repository,
-        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
-        private ProcessorInterface $persistProcessor,
-        #[Autowire(service: 'api_platform.doctrine.orm.state.remove_processor')]
-        private ProcessorInterface $removeProcessor,
+        private DependencyRepository $repository
     ) {
     }
     public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
     {
-        $this->repository->persist($data);
+        if ($operation instanceof DeleteOperationInterface) {
+            $this->remove($data);
+            return;
+        }
+
+        $this->persist($data);
     }
 
-    public function supports(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): bool
+    public function remove(Dependency $dependency): void
     {
-        return $data instanceof Dependency;
+        $this->repository->remove($dependency);
     }
 
-    public function persist(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
+    public function persist(Dependency $dependency): void
     {
-    }
-
-    public function remove(mixed $data, Operation $operation, array $uriVariables = [], array $context = []): void
-    {
-        // Remove the state
+        $this->repository->persist($dependency);
     }
 }

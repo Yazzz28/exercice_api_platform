@@ -25,8 +25,6 @@ final class DependencyDataProvider implements ProviderInterface
         if ($operation instanceof Get) {
             return $this->repository->findOneBy($uriVariables['uuid']);
         }
-    
-        // Add a default return statement
         return null;
     }
 }
