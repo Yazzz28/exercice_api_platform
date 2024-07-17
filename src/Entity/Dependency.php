@@ -20,17 +20,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(),
         new GetCollection(),
-        new PostMethod(),
+        new PostMethod(
+            processor: DependencyDataPersister::class
+        ),
         new Patch(
             denormalizationContext: [
                 'groups' => ['put:Dependency']
             ]
-            ),
+        ),
         new Delete()
     ],
     paginationEnabled: false,
     provider: DependencyDataProvider::class,
-    processor: DependencyDataPersister::class
 )]
 class Dependency
 {
@@ -95,15 +96,15 @@ class Dependency
     }
 
 
-        /**
-         * Set the value of version
-         *
-         * @return  self
-         */ 
-        public function setVersion($version)
-        {
-                $this->version = $version;
+    /**
+     * Set the value of version
+     *
+     * @return  self
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
 
-                return $this;
-        }
+        return $this;
+    }
 }
