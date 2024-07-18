@@ -25,6 +25,21 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'publish',
             uriTemplate: '/posts/{id}/publish',
             controller: PublishPostAction::class,
+            openapiContext: [
+                'summary' => 'Publishes a post',
+                'responses' => [
+                    '200' => [
+                        'description' => 'The published post',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/Post',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ),
         new Get(
             normalizationContext: ['groups' => ['count:Post']],
