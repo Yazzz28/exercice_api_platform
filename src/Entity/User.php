@@ -36,7 +36,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
             openapiContext: [
                 'security' => [['bearerAuth' => []]],
             ]
-
         )
     ],
     normalizationContext: ['groups' => ['user:read']],

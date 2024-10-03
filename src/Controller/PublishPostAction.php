@@ -9,7 +9,7 @@ class PublishPostAction extends AbstractController
 {
     public function __invoke(Post $data): Post
     {
-        $data->setOnline(true);
+        $data->setOnline(!$data->isOnline());
 
         return $data;
     }

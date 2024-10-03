@@ -10,13 +10,14 @@ use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PostRepository;
 use ApiPlatform\Metadata\ApiResource;
-use App\Controller\PublishPostAction;;
+use App\Controller\PublishPostAction;
 use ApiPlatform\Metadata\GetCollection;
 use App\Controller\CountPostController;
 use ApiPlatform\Metadata\Post as PostMethod;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
@@ -123,6 +124,7 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'posts', cascade: ['persist'])]
     #[Groups(['read:Post', 'read:Posts', 'write:Post'])]
     #[Valid]
+    #[MaxDepth(10)]
     private ?Category $category = null;
 
     #[ORM\Column]
